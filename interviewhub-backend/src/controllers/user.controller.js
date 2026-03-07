@@ -4,7 +4,7 @@ import { ApiResponse } from "../utils/api-response.js";
 import { User } from "../models/users.models.js";
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password, fullName, authProvider } = req.body;
+  const { username, email, password, fullName, authProvider, role } = req.body;
 
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
@@ -22,6 +22,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     fullName,
     authProvider: currentAuthProvider,
+    role,
   });
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken -forgotPasswordToken -forgotPasswordExpiry -__v",
