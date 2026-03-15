@@ -52,13 +52,16 @@ const userSchema = new Schema(
   },
 );
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   if (!this.isModified("password") || !this.password) {
     return;
   }
   this.password = await bcrypt.hash(this.password, 10);
 });
 userSchema.methods.isPasswordCorrect = async function (pass) {
+  if (!this.password) {
+    return false;
+  }
   return await bcrypt.compare(pass, this.password);
 };
 userSchema.methods.generateAccessToken = function () {
