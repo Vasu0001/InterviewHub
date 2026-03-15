@@ -35,4 +35,50 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
-export { registerUser };
+const loginUser = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
+  if (!username && !email) {
+    throw new ApiError(400, "username or email is required");
+  }
+  const user = await User.findOne({
+    $or: [
+      { username: username ? username.toLowerCase() : "" },
+      { email: email ? email.toLowerCase() : "" },
+    ],
+  });
+  if (!user) {
+    throw new ApiError(401, "Invalid Credentials");
+  }
+  const correctPassword = await user.isPasswordCorrect(password);
+  if (!correctPassword) {
+    throw new ApiError(401, "Invalid Credentials");
+  }
+  const accessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken -forgotPasswordToken -__v",
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in successfully",
+      ),
+    );
+});
+
+export { registerUser, loginUser };
