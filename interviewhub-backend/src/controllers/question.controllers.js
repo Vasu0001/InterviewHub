@@ -21,4 +21,9 @@ const createQuestion = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, newQuestion, "Question created"));
 });
 
-export { createQuestion };
+const getAllQuestions = asyncHandler(async (req, res) => {
+  const questions = await Question.find().select("title difficulty category");
+  return res.status(200).json(new ApiResponse(200, questions, "All questions"));
+});
+
+export { createQuestion, getAllQuestions };
