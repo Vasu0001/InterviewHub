@@ -42,4 +42,21 @@ const userLogInValidator = () => {
   ];
 };
 
-export { userRegisterValidator, userLogInValidator };
+const createQuestionValidator = () => {
+  return [
+    body("title").notEmpty().withMessage("title is required").trim(),
+    body("description")
+      .notEmpty()
+      .withMessage("description is required")
+      .trim(),
+    body("difficulty")
+      .notEmpty()
+      .withMessage("difficulty is required")
+      .isIn(["Easy", "Medium", "Hard"])
+      .withMessage("Diffculty must be Easy, Medium, or Hard"),
+    body("category").optional().isArray().withMessage("Array is required"),
+    body("startingCode").optional().trim(),
+  ];
+};
+
+export { userRegisterValidator, userLogInValidator, createQuestionValidator };
