@@ -26,4 +26,20 @@ const getAllQuestions = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, questions, "All questions"));
 });
 
-export { createQuestion, getAllQuestions };
+const getQuestionById = asyncHandler(async (req, res) => {
+  const id = req.params.questionId;
+  if (!id) {
+    throw new ApiError(400, "QuestionId is required");
+  }
+  if (!mongoose.isValidObjectId(id)) {
+    throw new ApiError(400, "Invalid Question ID format");
+  }
+  const question = await Question.findById(id);
+  if (!question) {
+    throw new ApiError(404, "Question not found");
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, question, "Question fetched successfully"));
+});
+export { createQuestion, getAllQuestions, getQuestionById };
