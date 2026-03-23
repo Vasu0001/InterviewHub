@@ -24,3 +24,22 @@ export const jwtVerify = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, err?.message || "Invalid access token");
   }
 });
+
+export const isInterviewer = asyncHandler(async (req, res, next) => {
+  if (!req.user || !req.user.role) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  if (req.user.role !== "Interviewer") {
+    throw new ApiError(403, "you don't have permission to be here");
+  }
+  next();
+});
+export const isAdmin = asyncHandler(async (req, res, next) => {
+  if (!req.user || !req.user.role) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  if (req.user.role !== "Admin") {
+    throw new ApiError(403, "you don't have permission to be here");
+  }
+  next();
+});
