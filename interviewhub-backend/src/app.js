@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes.js";
+import questionRouter from "./routes/question.routes.js";
+import interviewRouter from "./routes/interview.routes.js";
 const app = express();
 
 app.use(express.json({ limit: "16Kb" }));
@@ -19,6 +21,8 @@ app.use(
 );
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/questions", questionRouter);
+app.use("/api/v1/interviews", interviewRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
