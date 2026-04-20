@@ -22,7 +22,7 @@ const createQuestion = asyncHandler(async (req, res) => {
 });
 
 const getAllQuestions = asyncHandler(async (req, res) => {
-  const questions = await Question.find().select("title difficulty category");
+  const questions = await Question.find().select({});
   return res.status(200).json(new ApiResponse(200, questions, "All questions"));
 });
 
