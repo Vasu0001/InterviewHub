@@ -1,5 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
+const testCaseSchema = new Schema({
+  input: { type: String, required: true },
+  expectedOutput: { type: String, required: true },
+});
+
 const questionSchema = new Schema({
   title: {
     type: String,
@@ -17,6 +22,7 @@ const questionSchema = new Schema({
     type: String,
     default: "",
   },
+  testCases: [testCaseSchema],
 });
 
 const interviewSchema = new Schema(
@@ -48,16 +54,11 @@ const interviewSchema = new Schema(
     },
     questions: [questionSchema],
     feedback: {
-      rating: {
-        type: Number,
-        min: 1,
-        max: 5,
-        default: null,
-      },
-      notes: {
-        type: String,
-        default: "",
-      },
+      problemSolving: { type: Number, min: 1, max: 5, default: null },
+      codeQuality: { type: Number, min: 1, max: 5, default: null },
+      communication: { type: Number, min: 1, max: 5, default: null },
+      overall: { type: Number, min: 1, max: 5, default: null },
+      notes: { type: String, default: "" },
     },
     startTime: {
       type: Date,
