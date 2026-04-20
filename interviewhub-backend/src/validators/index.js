@@ -6,7 +6,7 @@ const userRegisterValidator = () => {
       .trim()
       .notEmpty()
       .withMessage("Username is required")
-      .isLowercase()
+      .toLowerCase()
       .withMessage("Username must be lowercase")
       .isLength({ min: 3 })
       .withMessage("Username must be at least 3 characters long"),
