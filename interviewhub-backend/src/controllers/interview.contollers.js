@@ -56,4 +56,48 @@ const submitAnswer = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, liveRoom, "Answer saved successfully"));
 });
 
-export { createInterview, getInterviewByRoomId, submitAnswer };
+const submitFeedback = asyncHandler(async (req, res) => {
+  const { roomId } = req.params;
+  const { problemSolving, codeQuality, communication, overall, notes } =
+    req.body;
+
+  const liveRoom = await Interview.findOne({ roomId });
+  if (!liveRoom) {
+    throw new ApiError(404, "Room not found");
+  }
+
+  liveRoom.status = "Completed";
+  liveRoom.endTime = new Date();
+  liveRoom.feedback = {
+    problemSolving,
+    codeQuality,
+    communication,
+    overall,
+    notes,
+  };
+
+  await liveRoom.save();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, liveRoom, "Interview completed and feedback saved"),
+    );
+});
+
+const getInterviewsHistory = asyncHandler(async (req, res) => {
+  const history = await Interview.find({ interviewerId: req.user._id }).sort({
+    createdAt: -1,
+  }); // Sort by newest first
+  return res
+    .status(200)
+    .json(new ApiResponse(200, history, "History fetched successfully"));
+});
+
+export {
+  createInterview,
+  getInterviewByRoomId,
+  submitAnswer,
+  submitFeedback,
+  getInterviewsHistory,
+};
