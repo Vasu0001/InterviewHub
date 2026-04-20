@@ -1,5 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
+const testCaseSchema = new Schema({
+  input: { type: String, required: true },
+  expectedOutput: { type: String, required: true },
+});
+
 const questionSchema = new Schema(
   {
     title: {
@@ -28,6 +33,7 @@ const questionSchema = new Schema(
       type: String,
       default: "// Write your solution here",
     },
+    testCases: [testCaseSchema],
   },
   {
     timestamps: true,
