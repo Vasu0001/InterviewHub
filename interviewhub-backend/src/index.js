@@ -12,7 +12,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("change-phase", ({ roomId, phase }) => {
-    console.log(`Phase changing to ${phase} in room ${roomId}`); // Server tracker
+    console.log(`Phase changing to ${phase} in room ${roomId}`);
     socket.to(roomId).emit("phase-changed", phase);
   });
 
