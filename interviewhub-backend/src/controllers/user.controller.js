@@ -6,8 +6,11 @@ import { User } from "../models/users.models.js";
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, fullName, authProvider, role } = req.body;
 
+  const lowercasedUsername = username?.toLowerCase();
+  const lowercasedEmail = email?.toLowerCase();
+
   const existedUser = await User.findOne({
-    $or: [{ username }, { email }],
+    $or: [{ username: lowercasedUsername }, { email: lowercasedEmail }],
   });
   if (existedUser) {
     throw new ApiError(409, "User with this email or username already exists");
@@ -17,8 +20,8 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Password is required for registration");
   }
   const user = await User.create({
-    username: username.toLowerCase(),
-    email: email.toLowerCase(),
+    username: lowercasedUsername,
+    email: lowercasedEmail,
     password,
     fullName,
     authProvider: currentAuthProvider,
@@ -100,4 +103,32 @@ const getCurrentUser = asyncHandler((req, res) => {
     .json(new ApiResponse(200, req.user, "User fetched successfully"));
 });
 
-export { registerUser, loginUser, logoutUser, getCurrentUser };
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "Both old and new passwords are required");
+  }
+
+  const user = await User.findById(req.user._id);
+
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, "Invalid old password");
+  }
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password changed successfully"));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  changeCurrentPassword,
+};
