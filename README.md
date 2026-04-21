@@ -1,11 +1,11 @@
 # 🚀 InterviewHub: Real-Time Technical Interview Platform
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-View_Project-blue?style=for-the-badge)](https://interviewhub-frontend.vercel.app)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)]()
-[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)]()
-[![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)]()
-[![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=webrtc&logoColor=white)]()
-[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)]()
+[![Live Demo](https://img.shields.io/badge/Live_Demo-View_Project-blue?style=for-the-badge)](https://interview-cifbdjhki-vasus-projects-e6887f01.vercel.app/)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
+![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=webrtc&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 
 A full-stack, real-time collaborative coding and video-conferencing platform designed to streamline technical interviews. Built to provide a distraction-free, zero-setup environment where candidates can write code, and interviewers can evaluate them in real-time.
 
@@ -31,7 +31,7 @@ This project is structured as a **Monorepo**, separating the client and server w
 - **Framework:** React.js (Vite)
 - **Styling:** Tailwind CSS + Lucide Icons
 - **State & Routing:** React Router DOM, React Hooks
-- **Key Libraries:** `@monaco-editor/react`, `socket.io-client`, `axios`
+- **Key Libraries:** `@monaco-editor/react`, `socket.io-client`, `axios`, `peerjs`
 
 ### Backend (`/interviewhub-backend`)
 
@@ -40,6 +40,28 @@ This project is structured as a **Monorepo**, separating the client and server w
 - **Real-time:** Socket.io
 - **Code Execution:** JDoodle Compiler API
 - **Security:** `jsonwebtoken`, `bcrypt`, `express-validator`, `cors`
+
+### Visual Data Flow
+
+```mermaid
+graph TD
+    Client[Candidate/Interviewer Browser] -->|HTTPS / React UI| Vercel(Frontend Hosted on Vercel)
+    
+    Client <-->|WebRTC Peer-to-Peer| PeerJS[Direct Video/Audio Stream]
+    Client <-->|Socket.io Real-Time| Render(Backend Hosted on Render)
+    
+    Render -->|CRUD Operations| MongoDB[(MongoDB Atlas)]
+    Render -->|Code Execution| JDoodle[JDoodle Compiler API]
+    
+    subgraph backend_server [Backend Server]
+        Render
+    end
+    
+    subgraph external_services [External Services]
+        MongoDB
+        JDoodle
+    end
+```
 
 ## 🧠 Technical Challenges & Solutions
 
@@ -61,7 +83,7 @@ Want to run this locally? You will need two terminal windows.
 **1. Clone the repository:**
 
 ```bash
-git clone [https://github.com/yourusername/InterviewHub.git](https://github.com/yourusername/InterviewHub.git)
+git clone https://github.com/yourusername/InterviewHub.git
 cd InterviewHub
 ```
 
@@ -109,30 +131,8 @@ _Start the React app:_
 npm run dev
 ```
 
-### Visual Data Flow
-
-```mermaid
-graph TD
-    Client[Candidate/Interviewer Browser] -->|HTTPS / React UI| Vercel(Frontend Hosted on Vercel)
-
-    Client <-->|WebRTC Peer-to-Peer| PeerJS[Direct Video/Audio Stream]
-    Client <-->|Socket.io Real-Time| Render(Backend Hosted on Render)
-
-    Render -->|CRUD Operations| MongoDB[(MongoDB Atlas)]
-    Render -->|Code Execution| JDoodle[JDoodle Compiler API]
-
-    subgraph Backend Server
-    Render
-    end
-
-    subgraph External Services
-    MongoDB
-    JDoodle
-    end
-
-
 ## 🌍 Deployment
+
 * **Frontend:** Hosted on [Vercel](https://vercel.com).
 * **Backend:** Hosted on [Render](https://render.com).
 * **Database:** Hosted on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-```
