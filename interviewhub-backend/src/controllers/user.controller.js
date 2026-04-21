@@ -13,7 +13,7 @@ const registerUser = asyncHandler(async (req, res) => {
     $or: [{ username: lowercasedUsername }, { email: lowercasedEmail }],
   });
   if (existedUser) {
-    throw new ApiError(409, "User with this email or username already exists");
+    return res.status(409).json({ message: "Username is already taken" });
   }
   const currentAuthProvider = authProvider || "local";
   if (currentAuthProvider === "local" && !password) {

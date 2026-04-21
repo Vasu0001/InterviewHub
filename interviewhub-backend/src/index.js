@@ -10,9 +10,23 @@ const port = process.env.PORT || 3000;
 
 const httpServer = createServer(app);
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CORS_ORIGIN,
+  "https://interview-hub-five.vercel.app",
+  "http://localhost:5173"
+];
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+        callback(null, true);
+      } else {
+        console.log("Socket CORS Blocked Origin:", origin); 
+        callback(new Error("Socket Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
     credentials: true,
   },
