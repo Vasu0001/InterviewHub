@@ -31,7 +31,7 @@ This project is structured as a **Monorepo**, separating the client and server w
 - **Framework:** React.js (Vite)
 - **Styling:** Tailwind CSS + Lucide Icons
 - **State & Routing:** React Router DOM, React Hooks
-- **Key Libraries:** `@monaco-editor/react`, `socket.io-client`, `axios`
+- **Key Libraries:** `@monaco-editor/react`, `socket.io-client`, `axios`, `peerjs`
 
 ### Backend (`/interviewhub-backend`)
 
@@ -40,6 +40,28 @@ This project is structured as a **Monorepo**, separating the client and server w
 - **Real-time:** Socket.io
 - **Code Execution:** JDoodle Compiler API
 - **Security:** `jsonwebtoken`, `bcrypt`, `express-validator`, `cors`
+
+### Visual Data Flow
+
+```mermaid
+graph TD
+    Client[Candidate/Interviewer Browser] -->|HTTPS / React UI| Vercel(Frontend Hosted on Vercel)
+    
+    Client <-->|WebRTC Peer-to-Peer| PeerJS[Direct Video/Audio Stream]
+    Client <-->|Socket.io Real-Time| Render(Backend Hosted on Render)
+    
+    Render -->|CRUD Operations| MongoDB[(MongoDB Atlas)]
+    Render -->|Code Execution| JDoodle[JDoodle Compiler API]
+    
+    subgraph backend_server [Backend Server]
+        Render
+    end
+    
+    subgraph external_services [External Services]
+        MongoDB
+        JDoodle
+    end
+```
 
 ## 🧠 Technical Challenges & Solutions
 
@@ -61,7 +83,7 @@ Want to run this locally? You will need two terminal windows.
 **1. Clone the repository:**
 
 ```bash
-git clone [https://github.com/yourusername/InterviewHub.git](https://github.com/yourusername/InterviewHub.git)
+git clone https://github.com/yourusername/InterviewHub.git
 cd InterviewHub
 ```
 
@@ -109,29 +131,8 @@ _Start the React app:_
 npm run dev
 ```
 
-### Visual Data Flow
-
-```mermaid
-graph TD
-    Client[Candidate/Interviewer Browser] -->|HTTPS / React UI| Vercel(Frontend Hosted on Vercel)
-    
-    Client <-->|WebRTC Peer-to-Peer| PeerJS[Direct Video/Audio Stream]
-    Client <-->|Socket.io Real-Time| Render(Backend Hosted on Render)
-    
-    Render -->|CRUD Operations| MongoDB[(MongoDB Atlas)]
-    Render -->|Code Execution| JDoodle[JDoodle Compiler API]
-    
-    subgraph backend_server [Backend Server]
-        Render
-    end
-    
-    subgraph external_services [External Services]
-        MongoDB
-        JDoodle
-    end
-
 ## 🌍 Deployment
+
 * **Frontend:** Hosted on [Vercel](https://vercel.com).
 * **Backend:** Hosted on [Render](https://render.com).
 * **Database:** Hosted on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-```
