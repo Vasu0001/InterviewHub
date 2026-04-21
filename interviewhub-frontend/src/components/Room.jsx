@@ -134,9 +134,19 @@ const Room = () => {
 
   useEffect(() => {
     if (needsIdentity) return;
+
+    if (socketRef.current) return;
+
+    const socket = io(import.meta.env.VITE_BACKEND_URL, {
+      withCredentials: true,
+      transports: ["websocket"],
+    });
+    socketRef.current = socket;
     const load = async () => {
       try {
-        const res = await axios.get(`/api/v1/interviews/${roomId}`);
+        const res = await axios.get(`/api/v1/interviews/${roomId}`, {
+          withCredentials: true,
+        });
         setRoomData(res.data.data);
         if (res.data.data.questions?.length > 0) {
           setActiveQuestion(res.data.data.questions[0]);
