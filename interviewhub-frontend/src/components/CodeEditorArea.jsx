@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-import axios from "axios";
+import axios from "../api.js";
 
 export const CodeEditorArea = ({
   code,

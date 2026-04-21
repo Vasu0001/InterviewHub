@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api.js";
 import { io } from "socket.io-client";
 import Peer from "peerjs";
 import Draggable from "react-draggable";
