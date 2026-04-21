@@ -121,13 +121,13 @@ graph TD
     Render -->|CRUD Operations| MongoDB[(MongoDB Atlas)]
     Render -->|Code Execution| JDoodle[JDoodle Compiler API]
     
-    subgraph Backend Server
-    Render
+    subgraph backend_server [Backend Server]
+        Render
     end
     
-    subgraph External Services
-    MongoDB
-    JDoodle
+    subgraph external_services [External Services]
+        MongoDB
+        JDoodle
     end
 
 ## 🌍 Deployment
