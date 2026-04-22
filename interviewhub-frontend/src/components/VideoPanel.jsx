@@ -33,6 +33,7 @@ const VideoBox = ({
   isRemote = false,
   isHardwareOn = true,
   isConnected = true,
+  isCoding = false,
 }) => {
   const isWaiting = isRemote && !isConnected;
   const isCameraOff = isConnected && !isHardwareOn;
@@ -102,6 +103,7 @@ export const VideoPanel = ({
         isMuted={true}
         isHardwareOn={isCameraOn}
         isConnected={true}
+        isCoding={isCoding}
       />
       <VideoBox
         stream={remoteStream}
@@ -110,6 +112,7 @@ export const VideoPanel = ({
         isRemote={true}
         isHardwareOn={remoteCameraOn}
         isConnected={isOtherPersonHere}
+        isCoding={isCoding}
       />
     </div>
   );
