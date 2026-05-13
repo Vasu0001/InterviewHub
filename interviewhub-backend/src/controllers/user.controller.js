@@ -3,6 +3,12 @@ import { ApiError } from "../utils/api-errors.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { User } from "../models/users.models.js";
 
+const getCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+});
+
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, fullName, authProvider, role } = req.body;
 
@@ -63,11 +69,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken -forgotPasswordToken -__v",
   );
-  const options = {
-    httpOnly: true,
-    secure: true,
-    sameSite:"None"
-  };
+  const options = getCookieOptions();
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
@@ -87,11 +89,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { refreshToken: "" });
-  const options = {
-    httpOnly: true,
-    secure: true,
-    sameSite:"None"
-  };
+  const options = getCookieOptions();
   return res
     .status(200)
     .clearCookie("accessToken", options)

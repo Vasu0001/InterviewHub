@@ -11,6 +11,12 @@ export const runCodeLocally = async (req, res) => {
   const { language, code, testCases } = req.body;
 
   if (!code) return res.status(400).json({ message: "Code is required" });
+  if (!process.env.JDOODLE_CLIENT_ID || !process.env.JDOODLE_CLIENT_SECRET) {
+    return res.status(503).json({
+      message: "Execution engine is not configured",
+      error: "Missing JDoodle credentials on the backend deployment",
+    });
+  }
 
   const config = JDOODLE_LANGUAGES[language];
   if (!config) return res.status(400).json({ message: "Unsupported language" });
@@ -33,13 +39,17 @@ export const runCodeLocally = async (req, res) => {
   }
 
   try {
-    const response = await axios.post("https://api.jdoodle.com/v1/execute", {
-      clientId: process.env.JDOODLE_CLIENT_ID,
-      clientSecret: process.env.JDOODLE_CLIENT_SECRET,
-      script: scriptToRun,
-      language: config.lang,
-      versionIndex: config.versionIndex,
-    });
+    const response = await axios.post(
+      "https://api.jdoodle.com/v1/execute",
+      {
+        clientId: process.env.JDOODLE_CLIENT_ID,
+        clientSecret: process.env.JDOODLE_CLIENT_SECRET,
+        script: scriptToRun,
+        language: config.lang,
+        versionIndex: config.versionIndex,
+      },
+      { timeout: 20000 },
+    );
 
     let stdout = response.data.output;
     let stderr = response.data.error || "";

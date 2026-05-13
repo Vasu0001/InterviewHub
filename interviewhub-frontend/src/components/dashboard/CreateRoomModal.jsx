@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../api.js";
+import { PUBLIC_APP_URL } from "../../config.js";
 import { Search, CheckCircle2, Circle, Copy } from "lucide-react";
 
 export function CreateRoomModal({ isOpen, onClose, questions }) {
@@ -29,10 +30,8 @@ export function CreateRoomModal({ isOpen, onClose, questions }) {
         { candidateName, questionIds: selectedQuestionIds },
         { withCredentials: true },
       );
-      setGeneratedLink(
-        `${window.location.origin}/room/${response.data.data.roomId}`,
-      );
-    } catch (error) {
+      setGeneratedLink(`${PUBLIC_APP_URL}/room/${response.data.data.roomId}`);
+    } catch {
       alert("Failed to create room");
     }
   };
@@ -42,7 +41,7 @@ export function CreateRoomModal({ isOpen, onClose, questions }) {
       await navigator.clipboard.writeText(generatedLink);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
+    } catch {
       console.error("Failed to copy");
     }
   };

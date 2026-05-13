@@ -96,9 +96,18 @@ function Dashboard() {
   const handleLogout = async () => {
     try {
       await axios.post("/api/v1/users/logout", {}, { withCredentials: true });
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("username");
+      localStorage.removeItem("role");
       navigate("/auth");
     } catch (error) {
       console.error("Logout failed", error);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("username");
+      localStorage.removeItem("role");
+      navigate("/auth");
     }
   };
 

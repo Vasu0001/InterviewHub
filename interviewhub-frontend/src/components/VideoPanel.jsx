@@ -81,7 +81,6 @@ export const VideoPanel = ({
   myStream,
   remoteStream,
   isCameraOn,
-  isMicOn,
   remoteCameraOn,
   isOtherPersonHere,
   userRole,

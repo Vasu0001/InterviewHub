@@ -36,6 +36,8 @@ function Auth() {
           "role",
           response.data.data.user.role || "Interviewer",
         );
+        localStorage.setItem("accessToken", response.data.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.data.refreshToken);
         navigate("/dashboard");
       } else {
         await axios.post("/api/v1/users/register", formData, {

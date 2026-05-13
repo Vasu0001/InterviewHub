@@ -18,7 +18,6 @@ export const CodeEditorArea = ({
   setLanguage,
   output,
   isRunning,
-  userRole,
   onSave,
   onEnd,
   onSocketEmit,

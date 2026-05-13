@@ -10,20 +10,30 @@ const port = process.env.PORT || 3000;
 
 const httpServer = createServer(app);
 
-const allowedOrigins = [
+const configuredOrigins = [
   process.env.FRONTEND_URL,
   process.env.CORS_ORIGIN,
   "https://interview-hub-five.vercel.app",
-  "http://localhost:5173"
-];
+  "http://localhost:5173",
+]
+  .flatMap((origin) => origin?.split(",") || [])
+  .map((origin) => origin.trim().replace(/\/$/, ""))
+  .filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (configuredOrigins.includes("*")) return true;
+  if (configuredOrigins.includes(origin)) return true;
+  return /^https:\/\/[a-z0-9-]+(-[a-z0-9-]+)*\.vercel\.app$/i.test(origin);
+};
 
 const io = new Server(httpServer, {
   cors: {
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+      if (isAllowedOrigin(origin)) {
         callback(null, true);
       } else {
-        console.log("Socket CORS Blocked Origin:", origin); 
+        console.log("Socket CORS Blocked Origin:", origin);
         callback(new Error("Socket Not allowed by CORS"));
       }
     },

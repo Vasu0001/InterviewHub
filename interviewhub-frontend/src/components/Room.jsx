@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../api.js";
+import { BACKEND_URL } from "../config.js";
 import { io } from "socket.io-client";
 import Peer from "peerjs";
 import Draggable from "react-draggable";
@@ -50,15 +51,12 @@ const Room = () => {
 
   const storedUsername = localStorage.getItem("username");
   const storedRole = localStorage.getItem("role");
-  const [needsIdentity, setNeedsIdentity] = useState(
-    !storedUsername || !storedRole,
-  );
+  const [needsIdentity] = useState(!storedUsername || !storedRole);
   const [tempName, setTempName] = useState("");
   const [tempRole, setTempRole] = useState("Candidate");
 
   const [interviewPhase, setInterviewPhase] = useState("greeting");
   const [roomData, setRoomData] = useState(null);
-  const [allQuestions, setAllQuestions] = useState([]);
   const [activeQuestion, setActiveQuestion] = useState(null);
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("javascript");
@@ -137,9 +135,8 @@ const Room = () => {
 
     if (socketRef.current) return;
 
-    const socket = io(import.meta.env.VITE_BACKEND_URL, {
+    const socket = io(BACKEND_URL, {
       withCredentials: true,
-      transports: ["websocket"],
     });
     socketRef.current = socket;
     const load = async () => {
@@ -154,28 +151,25 @@ const Room = () => {
             res.data.data.questions[0].startingCode || "// Start coding...",
           );
         }
-        if (userRole === "Interviewer") {
-          const qRes = await axios.get("/api/v1/questions", {
-            withCredentials: true,
-          });
-          setAllQuestions(qRes.data.data);
-        }
-      } catch (e) {
+      } catch {
         navigate("/dashboard");
       } finally {
         setIsLoading(false);
       }
     };
     load();
+
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+    };
   }, [roomId, needsIdentity]);
 
   useEffect(() => {
     if (needsIdentity) return;
-    const socket = io(import.meta.env.VITE_BACKEND_URL, {
-      withCredentials: true,
-      transports: ["websocket"],
-    });
-    socketRef.current = socket;
+    const socket = socketRef.current;
+
+    if (!socket) return;
 
     socket.on("connect", () => {
       if (userRole === "Candidate")
@@ -301,7 +295,7 @@ const Room = () => {
         safeStream.addTrack(
           ctx.createMediaStreamDestination().stream.getAudioTracks()[0],
         );
-      } catch (e) {
+      } catch {
         console.warn("Audio dummy block");
       }
     }
@@ -398,7 +392,7 @@ const Room = () => {
           if (sender)
             sender
               .replaceTrack(newTrack)
-              .catch((e) => console.log("Track swap ignored"));
+              .catch(() => console.log("Track swap ignored"));
         }
       });
     });

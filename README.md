@@ -123,6 +123,7 @@ _Create a `.env` file in the frontend directory:_
 
 ```env
 VITE_BACKEND_URL=http://localhost:8000
+VITE_PUBLIC_APP_URL=http://localhost:5173
 ```
 
 _Start the React app:_
@@ -136,3 +137,27 @@ npm run dev
 * **Frontend:** Hosted on [Vercel](https://vercel.com).
 * **Backend:** Hosted on [Render](https://render.com).
 * **Database:** Hosted on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+
+### Required Production Environment Variables
+
+Set these in Vercel:
+
+```env
+VITE_BACKEND_URL=https://your-render-service.onrender.com
+VITE_PUBLIC_APP_URL=https://your-vercel-app.vercel.app
+```
+
+Set these in Render:
+
+```env
+NODE_ENV=production
+FRONTEND_URL=https://your-vercel-app.vercel.app
+CORS_ORIGIN=https://your-vercel-app.vercel.app
+MONGO_URI=your_mongodb_connection_string
+ACCESS_TOKEN_SECRET=your_access_token_secret
+ACCESS_TOKEN_EXPIRY=1d
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
+REFRESH_TOKEN_EXPIRY=10d
+JDOODLE_CLIENT_ID=your_jdoodle_id
+JDOODLE_CLIENT_SECRET=your_jdoodle_secret
+```
